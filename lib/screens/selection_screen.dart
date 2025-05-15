@@ -1,5 +1,7 @@
 // lib/screens/selection_screen.dart
 import 'package:flutter/material.dart';
+import 'package:kassongo_runner/widgets/custom_button_radio.dart';
+import 'package:kassongo_runner/widgets/skewed_button_elevated.dart';
 import '../widgets/custom_button_elevated.dart';
 import 'game_screen.dart';
 
@@ -11,8 +13,16 @@ class SelectionScreen extends StatefulWidget {
 }
 
 class _SelectionScreenState extends State<SelectionScreen> {
-  String _selectedPlayer = 'lion';
+  String? _selectedPlayer = 'lion';
   int _selectedLevel = 1;
+  
+  void _handleAvatarSelection(String? newValue) {
+    setState(() {
+      _selectedPlayer = newValue;
+      print('Avatar sélectionné : $_selectedPlayer');
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,35 +68,49 @@ class _SelectionScreenState extends State<SelectionScreen> {
                 crossAxisAlignment:
                     CrossAxisAlignment.center, // Alignement vertical au centre
                 children: [
-                  // Sélection des joueurs (Column)
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildPlayerSelection(
-                            name: 'LION',
-                            imagePath: 'assets/images/lion_avatar.png',
-                            isSelected: _selectedPlayer == 'lion',
-                            onTap: () {
-                              setState(() {
-                                _selectedPlayer = 'lion';
-                              });
-                            },
-                          ),
-                          const SizedBox(width: 20),
-                          _buildPlayerSelection(
-                            name: 'KASSONGO',
-                            imagePath: 'assets/images/kassongo_avatar.png',
-                            isSelected: _selectedPlayer == 'kassongo',
-                            onTap: () {
-                              setState(() {
-                                _selectedPlayer = 'kassongo';
-                              });
-                            },
-                          ),
-                        ],
+                      const Text(
+                        'FELINS',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                      const SizedBox(height: 20),
+                      Image.asset(
+                        'assets/images/lion_avatar.png',
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomButtonRadio(
+                        value: 'Lion',
+                        groupValue: _selectedPlayer,
+                        onChanged: (String? value) {
+                          _handleAvatarSelection(value);
+                        },
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'KASSONGO',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                      const SizedBox(height: 20),
+                      Image.asset(
+                        'assets/images/kassongo_avatar.png',
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(height: 20),
+                      CustomButtonRadio(
+                        value: 'Kassongo',
+                        groupValue: _selectedPlayer,
+                        onChanged: (String? value) {
+                          _handleAvatarSelection(value);
+                        },
                       ),
                     ],
                   ),
@@ -144,30 +168,29 @@ class _SelectionScreenState extends State<SelectionScreen> {
               ),
             ),
           ),
-          // Bouton Commencer (positionné sous le conteneur sombre)
           Positioned(
             top: screenHeight * 0.2 + screenHeight * 0.55 + 20,
             left: screenWidth * 0.3,
             right: screenWidth * 0.3,
             child: SizedBox(
-              height: 40,
-              child: CustomButtonElevated(
-                text: 'COMMENCER',
+              height: 60,
+              child: SkewedButtonElevated(
+                foregroundColor: Colors.black,
+                border: Border.all(color: Colors.black, width: 3),
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => GameScreen(level: _selectedLevel),
+                      builder: (context) => GameScreen(level: _selectedLevel, player: _selectedPlayer),
                     ),
                   );
                 },
-                backgroundColor: const Color(0xFFFF9800),
-                foregroundColor: Colors.black,
-                customShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                child: const Text(
+                  "Commencer",
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
@@ -175,14 +198,16 @@ class _SelectionScreenState extends State<SelectionScreen> {
           // Bouton Retour (en haut à gauche)
           Positioned(
             top: 20,
-            left: 20,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            left: 25,
+            child: SkewedButtonElevated(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                foregroundColor: Colors.black,
+                child: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 30),
+                border: Border.all(color: Colors.black, width: 3),
             ),
-          ),
+          )
         ],
       ),
     );
